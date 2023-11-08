@@ -88,12 +88,14 @@ export async function registerNewOrganizer(req, res) {
 
 export async function loginUser(req, res) {
   // Extrahiere Logindaten aus Requestbody
-  const { username, password } = req.body;
+  const { password } = req.body;
+  const { username } = req.body;
+  const { email } = req.body;
 
   try {
     // Versuche Usereintrag per Usernamen zu holen
-    const userEntry = await User.findOne({ username: username });
-
+    const userEntry = username ? await User.findOne({ username: username }) : await User.findOne({ email: email });
+    
     // Prüfe, ob Usereintrag per Usernamen gefunden wurde
     if (!userEntry) {
       // Sende Fehler zurück
