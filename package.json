@@ -1,0 +1,26 @@
+{
+  "name": "event-mangement-app-backend",
+  "version": "1.0.0",
+  "description": "An event management app focused on the user experience when searching for art events",
+  "main": "server.js",
+  "type": "module",
+  "scripts": {
+    "dev": "nodemon ./src/server.js",
+    "start": "node ./src/server.js",
+    "deploy":  "cd .. && cd frontend && npm run build && cp -r ./dist/* ../backend/src/frontend && cd .. && cd backend && npm start"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "bcrypt": "^5.1.1",
+    "cookie-parser": "^1.4.6",
+    "cors": "^2.8.5",
+    "dotenv": "^16.3.1",
+    "express": "^4.18.2",
+    "jsonwebtoken": "^9.0.2",
+    "mongoose": "^7.5.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.1"
+  }
+}
