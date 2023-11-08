@@ -1,0 +1,14 @@
+# Port setup for server
+ATLAS_URI=mongodb+srv://marian:9IyE8QF6PaT9BZDg@cluster0.zyo3m1l.mongodb.net/?retryWrites=true&w=majority
+
+# URI for ATLAS
+PORT=3000
+
+# Name for used DB in ATLAS cluster
+DB_NAME=user_roles_db
+
+# Kodierschlüssel für JWT Tokens
+JWT_SECRET=03abf9de-7b49-4dbc-970b-0400bba592db
+
+# Port for cros origin frontend
+ORIGIN=http://localhost:5173
