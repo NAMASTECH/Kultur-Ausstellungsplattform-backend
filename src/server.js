@@ -11,6 +11,7 @@ dotenv.config();
 import { connectToDb } from "./service/db.js";
 import authRouter from "./routes/auth.route.js";
 import userRouter from "./routes/user.route.js";
+import eventsRouter from "./routes/events.route.js";
 
 // Initialisierung des Servers
 const app = express();
@@ -42,6 +43,7 @@ await connectToDb();
 // ------------------------------------------- Router Definitionen -------------------------------------------
 app.use('/auth', authRouter);
 app.use('/users', userRouter);
+app.use('/api', eventsRouter); 
 
 
 // Starte des Server
