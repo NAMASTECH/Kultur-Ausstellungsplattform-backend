@@ -7,11 +7,12 @@
   "scripts": {
     "dev": "nodemon ./src/server.js",
     "start": "node ./src/server.js",
-    "deploy":  "cd .. && cd frontend && npm run build && cp -r ./dist/* ../backend/src/frontend && cd .. && cd backend && npm start"
+    "deploy": "cd .. && cd frontend && npm run build && cp -r ./dist/* ../backend/src/frontend && cd .. && cd backend && npm start"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "ajv": "^8.12.0",
     "bcrypt": "^5.1.1",
     "cookie-parser": "^1.4.6",
     "cors": "^2.8.5",
