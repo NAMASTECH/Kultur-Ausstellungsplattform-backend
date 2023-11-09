@@ -41,61 +41,6 @@ const eventSchema = new Schema(
             required: true,
             cast: false,
         },
-        dateStart: {
-            type: Date,
-            required: true,
-            cast: false,
-        },
-        dateEnd: {
-            type: Date,
-            required: true,
-            cast: false,
-        },
-        timeStart: {
-            type: String,
-            required: true,
-            cast: false,
-        },
-        timeEnd: {
-            type: String,
-            required: true,
-            cast: false,
-        },
-        venueName: {
-            type: String,
-            required: true,
-            cast: false,
-        },
-        venueType:{
-            type: String,
-            required: true,
-            cast: false,
-        },
-        city: {
-            type: String,
-            required: true,
-            cast: false,
-        },
-        street: {
-            type: String,
-            required: true,
-            cast: false,
-        },
-        houseNumber: {
-            type: String,
-            required: true,
-            cast: false,
-        },
-        additionalAddressInfo: {
-            type: String,
-            cast: false,
-        },
-        
-        zipCode: {
-            type: String,
-            required: true,
-            cast: false,
-        },
         organizerId: {
             type: Schema.Types.ObjectId,
             ref: "organizer",
