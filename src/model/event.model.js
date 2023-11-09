@@ -4,7 +4,7 @@ import { Schema, model } from "mongoose";
 
 const eventSchema = new Schema(
     {
-        title: {
+        eventTitle: {
             type: String,
             required: true,
             cast: false,
@@ -92,11 +92,6 @@ const eventSchema = new Schema(
         },
         
         zipCode: {
-            type: String,
-            required: true,
-            cast: false,
-        },
-        country: {
             type: String,
             required: true,
             cast: false,
