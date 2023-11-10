@@ -1,13 +1,29 @@
-import Event from "../model/event.model";
+import Event from "../model/event.model.js";
+import organizer from "../model/organizer.model.js";
+import jwt from "jsonwebtoken";
+import dotenv from "dotenv";
+dotenv.config();
 // Controller-Funktionen für Events
 
 // Erstelle ein neues Event
 export const createEvent = async (req, res) => {
-  try {
-    const newEvent = new Event(req.body);
+  
+  const token = req.cookies.access_token;
+  const decoded = jwt.decode(token, process.env.JWT_SECRET);
+  const idOrg = decoded.id;
+  const organizerData = await organizer.findOne({userId: idOrg});
+  
+try {
+  const newEvent = new Event({
+    ...req.body,
+    organizerId: organizerData._id
+  });
+  
     const savedEvent = await newEvent.save();
+    
     res.status(201).json(savedEvent);
   } catch (error) {
+    console.log(error);
     res.status(500).json({ message: 'Fehler beim Erstellen des Events', error });
   }
 };
@@ -22,6 +38,7 @@ export const updateEvent = async (req, res) => {
     res.json(updatedEvent);
   } catch (error) {
     res.status(500).json({ message: 'Fehler beim Aktualisieren des Events', error });
+    
   }
 };
 

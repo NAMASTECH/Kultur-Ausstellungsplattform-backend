@@ -2,15 +2,15 @@
 import event from "../model/event.model.js";
 
 export async function getAllEvents(req, res) {
-  const byDateStart = req.query.dateStart;
-  const byDateEnd = req.query.dateEnd;
+  const byDateStart = req.query.datesStart;
+  const byDateEnd = req.query.datesEnd;
   const byEventCategory = req.query.eventCategory;
   const byEventType = req.query.eventType;
   const page = req.query.page;
   const limit = req.query.limit;
 
-  const startDateFilter = byDateStart ? { dateStart: { $gte: byDateStart } } : {};
-  const endDateFilter = byDateEnd ? { dateEnd: { $lte: byDateEnd } } : {};
+  const startDateFilter = byDateStart ? { datesStart: { $gte: byDateStart } } : {};
+  const endDateFilter = byDateEnd ? { datesEnd: { $lte: byDateEnd } } : {};
   const eventCategoryFilter = byEventCategory ? { eventCategory: byEventCategory } : {};
   const eventTypeFilter = byEventType ? { eventType: byEventType } : {};
   const pageFilter = page ? parseInt(page) : 1;

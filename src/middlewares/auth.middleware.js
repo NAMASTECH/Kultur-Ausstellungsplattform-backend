@@ -28,7 +28,10 @@ export async function validateToken(req, res, next) {
 export async function validateAdmin(req, res, next) {
     // Extrahiere Token aus Cookie
     const token = req.cookies.access_token
-
+    if (!token) {
+        res.sendStatus(401);
+        return;
+    }
     try {
         // Versuche gelieferten Token zu verifizieren
         const payload = jwt.verify(token, process.env.JWT_SECRET);
@@ -58,7 +61,10 @@ export async function validateAdmin(req, res, next) {
 export async function validateOrganizerAndAdmin(req, res, next) {
     // Extrahiere Token aus Cookie
     const token = req.cookies.access_token
-
+    if (!token) {
+        res.sendStatus(401);
+        return;
+    }
     try {
         // Versuche gelieferten Token zu verifizieren
         const payload = jwt.verify(token, process.env.JWT_SECRET);
