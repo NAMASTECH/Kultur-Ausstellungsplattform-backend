@@ -1,6 +1,16 @@
 
 import event from "../model/event.model.js";
 
+const dateSherch = (byDateStart, byDateEnd) => {
+  const dateNew = new Date().toISOString().split("T")[0];
+  
+  if (byDateStart && byDateEnd) {
+    return { $and: [{ datesStart: { $gte: byDateStart } }, { datesEnd: { $gte: byDateEnd } }] };
+  } else {
+    return byDateStart ? { datesStart: { $gte: byDateStart } } : {datesStart: { $gte: dateNew }};
+  }
+}
+
 export async function getAllEvents(req, res) {
   const byDateStart = req.query.datesStart;
   const byDateEnd = req.query.datesEnd;
@@ -9,8 +19,8 @@ export async function getAllEvents(req, res) {
   const page = req.query.page;
   const limit = req.query.limit;
 
-  const startDateFilter = byDateStart ? { datesStart: { $gte: byDateStart } } : {};
-  const endDateFilter = byDateEnd ? { datesEnd: { $lte: byDateEnd } } : {};
+  const startDateFilter = dateSherch(byDateStart, byDateEnd);
+
   const eventCategoryFilter = byEventCategory ? { eventCategory: byEventCategory } : {};
   const eventTypeFilter = byEventType ? { eventType: byEventType } : {};
   const pageFilter = page ? parseInt(page) : 1;
@@ -20,7 +30,6 @@ export async function getAllEvents(req, res) {
     const events = await event
       .find({
         ...startDateFilter,
-        ...endDateFilter,
         ...eventCategoryFilter,
         ...eventTypeFilter,
       })
