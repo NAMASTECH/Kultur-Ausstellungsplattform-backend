@@ -3,6 +3,7 @@ import organizer from "../model/organizer.model.js";
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
 dotenv.config();
+import Venue from "../model/venue.model.js";
 // Controller-Funktionen für Events
 
 // Erstelle ein neues Event
@@ -12,11 +13,39 @@ export const createEvent = async (req, res) => {
   const decoded = jwt.decode(token, process.env.JWT_SECRET);
   const idOrg = decoded.id;
   const organizerData = await organizer.findOne({userId: idOrg});
+
   
 try {
+  // TO DO: Dublettenprüfung bei Venue (unique)
+  const {eventTitle, artist, eventType, eventCategory, img, description, homepage, dateStart, dateEnd, timeStart, timeEnd, venueName, venueType, city, street, houseNumber, additionalAddressInfo, zipCode} = req.body;
+
+  const newVenue = new Venue({
+    venueName,
+    venueType, 
+    city,
+    street, 
+    houseNumber, 
+    additionalAddressInfo,
+    zipCode
+  });
+
+  const savedVenue = await newVenue.save();
+
+  // Event anlegen
   const newEvent = new Event({
-    ...req.body,
-    organizerId: organizerData._id
+    eventTitle,
+    artist,
+    eventType,
+    eventCategory,
+    img, 
+    description,
+    homepage, 
+    dateStart, 
+    dateEnd, 
+    timeStart, 
+    timeEnd,
+    organizerId: organizerData._id,
+    venues: savedVenue._id
   });
   
     const savedEvent = await newEvent.save();
