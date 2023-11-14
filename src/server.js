@@ -13,6 +13,7 @@ import authRouter from "./routes/auth.route.js";
 import userRouter from "./routes/user.route.js";
 import eventsRouter from "./routes/events.route.js";
 import eventRouter from "./routes/event.route.js";
+// import "./model/venue.model.js";
 
 // Initialisierung des Servers
 const app = express();
