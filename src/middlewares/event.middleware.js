@@ -9,7 +9,7 @@ const eventSchema = new ajv.Schema({
         eventCategory: { type: "string", minLength: 3, maxLength: 30 },
         img: { type: "string", minLength: 3, maxLength: 3000 },
         description: { type: "string", minLength: 3, maxLength: 3000 },
-        homePage: { type: "string", minLength: 3, maxLength: 3000 },
+        homepage: { type: "string", minLength: 3, maxLength: 3000 },
         dateStart: { type: "string", minLength: 3, maxLength: 30 },
         dateEnd: { type: "string", minLength: 3, maxLength: 30 },
         timeStart: { type: "string", minLength: 3, maxLength: 30 },
@@ -22,7 +22,7 @@ const eventSchema = new ajv.Schema({
         additionalAddressInfo: { type: "string", minLength: 3, maxLength: 30 },
         zipCode: { type: "string", minLength: 3, maxLength: 30 },
     },
-    required: ["eventTitle", "artist", "eventType", "eventCategory", "img", "description", "homePage", "dateStart", "dateEnd", "timeStart", "timeEnd", "venueName", "venueType", "city", "street", "houseNumber", "additionalAddressInfo", "zipCode"],
+    required: ["eventTitle", "artist", "eventType", "eventCategory", "img", "description", "homepage", "dateStart", "dateEnd", "timeStart", "timeEnd", "venueName", "venueType", "city", "street", "houseNumber", "additionalAddressInfo", "zipCode"],
     additionalProperties: false,
 });
 
