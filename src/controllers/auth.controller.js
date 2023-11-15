@@ -134,7 +134,7 @@ export async function loginUser(req, res) {
     };
 
     const token = jwt.sign(tokenPayload, process.env.JWT_SECRET, {
-      expiresIn: 60 * 5, // 60 sek. * 5 Minuten = 5 Minuten
+      expiresIn: 60 * 10, // 60 sek. * 5 Minuten = 5 Minuten
     });
 
     // Stelle HttpOnly Cookie für Token aus

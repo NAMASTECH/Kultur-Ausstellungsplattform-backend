@@ -15,48 +15,62 @@ export const createEvent = async (req, res) => {
   const organizerData = await organizer.findOne({userId: idOrg});
 
   
-try {
-  // TO DO: Dublettenprüfung bei Venue (unique)
-  const {eventTitle, artist, eventType, eventCategory, img, description, homepage, dateStart, dateEnd, timeStart, timeEnd, venueName, venueType, city, street, houseNumber, additionalAddressInfo, zipCode} = req.body;
 
-  const newVenue = new Venue({
-    venueName,
-    venueType, 
-    city,
-    street, 
-    houseNumber, 
-    additionalAddressInfo,
-    zipCode
-  });
+  try {
+    // Dublettenprüfung bei Venue (unique)
+    const { eventTitle, eventCategory, eventType, img, description, homepage, dateStart, dateEnd, timeStart, timeEnd, venueName, venueType, city, street, houseNumber, zipCode, additionalAddressInfo, artist} = req.body;
 
-  const savedVenue = await newVenue.save();
+    // Überprüfe, ob ein Venue mit den gleichen Werten bereits existiert
+    let existingVenue = await Venue.findOne({
+      venueName,
+      venueType,
+      city,
+      street,
+      houseNumber,
+      zipCode,
+    });
 
-  // Event anlegen
-  const newEvent = new Event({
-    eventTitle,
-    artist,
-    eventType,
-    eventCategory,
-    img, 
-    description,
-    homepage, 
-    dateStart, 
-    dateEnd, 
-    timeStart, 
-    timeEnd,
-    organizerId: organizerData._id,
-    venues: savedVenue._id
-  });
-  
+    // Wenn das Venue bereits existiert, wiederverwende es
+    if (!existingVenue) {
+      // Wenn das Venue nicht existiert, erstelle ein neues
+      existingVenue = new Venue({
+        venueName,
+        venueType,
+        city,
+        street,
+        houseNumber,
+        additionalAddressInfo,
+        zipCode,
+      });
+
+      existingVenue = await existingVenue.save();
+    }
+
+    // Event anlegen
+    const newEvent = new Event({
+      eventTitle,
+      artist,
+      eventType,
+      eventCategory,
+      img,
+      description,
+      homepage,
+      dateStart,
+      dateEnd,
+      timeStart,
+      timeEnd,
+      organizerId: organizerData._id,
+      venues: existingVenue._id,
+    });
+
     const savedEvent = await newEvent.save();
-    
+
     res.status(201).json(savedEvent);
   } catch (error) {
     console.log(error);
     res.status(500).json({ message: 'Fehler beim Erstellen des Events', error });
   }
 };
-
 // Aktualisiere ein vorhandenes Event
 export const updateEvent = async (req, res) => {
   try {

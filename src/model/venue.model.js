@@ -41,8 +41,10 @@ const venueSchema = new Schema(
 		},
 	},
 	{ timestamps: true, versionKey: false }
+	
 );
 
+  
 console.log("Hallo from Venue Model")
 
 // Erstelle Model-Instanz für Venue-Collection
