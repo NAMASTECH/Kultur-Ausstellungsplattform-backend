@@ -9,7 +9,7 @@ const router = Router();
 router.post('/event', validateOrganizerAndAdmin, eventController.createEvent);
 router.put('/event/:id', validateOrganizerAndAdmin, eventController.updateEvent);
 router.delete('/event/:id', validateOrganizerAndAdmin, eventController.deleteEvent);
-router.get('/event', eventController.getEvents);
+// router.get('/event', eventController.getEvents);
 router.get('/event/:id', eventController.getEventById);
 
 export default router;

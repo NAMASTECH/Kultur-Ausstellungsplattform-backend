@@ -11,7 +11,7 @@ export async function connectToDb() {
         await mongoose.connect(process.env.ATLAS_URI, {
             dbName: process.env.DB_NAME
         });
-        console.log('Connection to DB established!');
+        console.log('Connection to DB established!' + process.env.ATLAS_URI + process.env.DB_NAME );
 
     } catch (error) {
         console.error(error);

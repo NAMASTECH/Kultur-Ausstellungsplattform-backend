@@ -8,5 +8,6 @@ const router = Router();
 
 // Definiere Endpoints für eventsRouter
 router.get('/events', eventsController.getAllEvents);
+router.get('/artists', eventsController.getAllArtists);
 
 export default router;
