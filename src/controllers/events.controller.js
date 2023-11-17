@@ -7,10 +7,14 @@ const dateSherch = (byDateStart, byDateEnd) => {
   // "2023-10-24T14:34:18z"  .split("T") -> [2023-10-24, 14:34:18z];
 
   if (byDateStart && byDateEnd) {
-    return { $and: [{ dateStart: { $gte: byDateStart } }, { dateEnd: { $lte: byDateEnd}  }] };
+    return { $and: [{ dateStart: { $gte: byDateStart } }, { dateStart: { $lte: byDateEnd}  }] };
     
+  } else if (byDateStart) {
+    const today = new Date(byDateStart.toISOString());
+    const nextDay = new Date(today.setDate(today.getDate() + 1));
+    return  { $and: [{ dateStart: { $gte: byDateStart } }, { dateStart: { $lte: nextDay}  }] };
   } else {
-    return byDateStart ? { dateStart: { $eq: byDateStart } } : {};
+    return {};
   }
 };
 
@@ -21,14 +25,14 @@ export async function getAllEvents(req, res) {
   const byEventType = req.query.eventType;
   const page = req.query.page;
   const limit = req.query.limit;
-  console.log( new Date(byDateStart) + " " +  new Date(byDateEnd));
+
   const startDateFilter = dateSherch(byDateStart ? new Date(byDateStart) :  null, byDateEnd ? new Date(byDateEnd) : null);
 
   const eventCategoryFilter = byEventCategory ? { eventCategory: byEventCategory } : {};
   const eventTypeFilter = byEventType ? { eventType: byEventType } : {};
   const pageFilter = page ? parseInt(page) : {} ;
   const limitFilter = limit ? parseInt(limit) : {};
-  console.log({...startDateFilter});
+  
   try {
     const events = await Event
         .find({
