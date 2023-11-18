@@ -1,5 +1,5 @@
 # Port setup for server
-ATLAS_URI=mongodb+srv://marian:9IyE8QF6PaT9BZDg@cluster0.zyo3m1l.mongodb.net/?retryWrites=true&w=majority
+ATLAS_URI=
 
 # URI for ATLAS
 PORT=3000
