@@ -7,7 +7,8 @@
   "scripts": {
     "dev": "nodemon ./src/server.js",
     "start": "node ./src/server.js",
-    "deploy": "cd .. && cd frontend && npm run build && cp -r ./dist/* ../backend/src/frontend && cd .. && cd backend && npm start"
+    "deploy": "cd .. && cd frontend && npm run build && cp -r ./dist/* ../backend/src/frontend && cd .. && cd backend && npm start",
+    "seed": "node seed.js"
   },
   "author": "",
   "license": "ISC",
@@ -22,6 +23,7 @@
     "mongoose": "^7.5.0"
   },
   "devDependencies": {
+    "@faker-js/faker": "^8.3.1",
     "nodemon": "^3.0.1"
   }
 }
