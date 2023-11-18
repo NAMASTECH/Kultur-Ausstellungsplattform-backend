@@ -4,6 +4,8 @@ import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
 dotenv.config();
 import Venue from "../model/venue.model.js";
+import Artist from "../model/artist.model.js";
+import Event from "../model/event.model.js";
 // Controller-Funktionen für Events
 
 // Erstelle ein neues Event
@@ -18,7 +20,7 @@ export const createEvent = async (req, res) => {
 
   try {
     // Dublettenprüfung bei Venue (unique)
-    const { eventTitle, eventCategory, eventType, img, description, homepage, dateStart, dateEnd, timeStart, timeEnd, venueName, venueType, city, street, houseNumber, zipCode, additionalAddressInfo, artist} = req.body;
+    const { eventTitle, eventCategory, eventType, img, description, homepage, dateStart, dateEnd, timeStart, timeEnd, venueName, venueType, city, street, houseNumber, zipCode, additionalAddressInfo, artistName, artistType, artistDescription, artistHomepage, artistImg} = req.body;
 
     // Überprüfe, ob ein Venue mit den gleichen Werten bereits existiert
     let existingVenue = await Venue.findOne({
@@ -46,21 +48,42 @@ export const createEvent = async (req, res) => {
       existingVenue = await existingVenue.save();
     }
 
+    let existingArtist = await Artist.findOne({
+      artistName,
+      artistType,
+      artistDescription,
+      artistHomepage,
+      artistImg,
+  });
+
+  if (!existingArtist) {
+    // Wenn das Venue nicht existiert, erstelle ein neues
+    existingArtist = new Artist({
+      artistName,
+      artistType,
+      artistDescription,
+      artistHomepage,
+      artistImg,
+    });
+
+    existingArtist = await existingArtist.save();
+  }
+
     // Event anlegen
     const newEvent = new Event({
       eventTitle,
-      artist,
       eventType,
       eventCategory,
       img,
       description,
       homepage,
-      dateStart,
-      dateEnd,
+      dateStart: new Date(dateStart),
+      dateEnd: new Date(dateEnd),
       timeStart,
       timeEnd,
       organizerId: organizerData._id,
       venues: existingVenue._id,
+      artists: existingArtist._id,
     });
 
     const savedEvent = await newEvent.save();
