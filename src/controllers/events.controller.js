@@ -33,14 +33,14 @@ export async function getAllEvents(req, res) {
   const byEventType = req.query.eventType;
   const page = req.query.page;
   const limit = req.query.limit;
-
+  
   const startDateFilter = searchByDate(
     byDateStart ? new Date(byDateStart) : null,
     byDateEnd ? new Date(byDateEnd) : null
   );
 
-  const eventVenueType = byVenueType && byVenueType !== "ALL" ? { "venues.venueType": byVenueType } : {};
-  const eventTypeFilter = byEventType && byEventType !== "ALL" ? { eventType: byEventType } : {};
+  const eventVenueType = byVenueType && byVenueType !== "All" ? { "venues.venueType": byVenueType } : {};
+  const eventTypeFilter = byEventType && byEventType !== "All" ? { eventType: byEventType } : {};
   const pageFilter = page ? parseInt(page) : 1 ;
   const limitFilter = limit ? parseInt(limit) : 10;
   
