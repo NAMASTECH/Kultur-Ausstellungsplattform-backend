@@ -1,11 +1,12 @@
 import Event from "../model/event.model.js";
-import organizer from "../model/organizer.model.js";
+import Organizer from "../model/organizer.model.js";
+import Venue from "../model/venue.model.js";
+import Artist from "../model/artist.model.js";
+
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
 dotenv.config();
-import Venue from "../model/venue.model.js";
-import Artist from "../model/artist.model.js";
-import Event from "../model/event.model.js";
+
 // Controller-Funktionen für Events
 
 // Erstelle ein neues Event
@@ -14,7 +15,7 @@ export const createEvent = async (req, res) => {
   const token = req.cookies.access_token;
   const decoded = jwt.decode(token, process.env.JWT_SECRET);
   const idOrg = decoded.id;
-  const organizerData = await organizer.findOne({userId: idOrg});
+  const organizerData = await Organizer.findOne({userId: idOrg});
 
   
 

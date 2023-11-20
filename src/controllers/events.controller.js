@@ -21,31 +21,71 @@ const dateSherch = (byDateStart, byDateEnd) => {
 export async function getAllEvents(req, res) {
   const byDateStart = req.query.dateStart;
   const byDateEnd = req.query.dateEnd;
-  const byEventCategory = req.query.eventCategory;
+  const byVenueType = req.query.venueType;
   const byEventType = req.query.eventType;
   const page = req.query.page;
   const limit = req.query.limit;
 
   const startDateFilter = dateSherch(byDateStart ? new Date(byDateStart) :  null, byDateEnd ? new Date(byDateEnd) : null);
 
-  const eventCategoryFilter = byEventCategory ? { eventCategory: byEventCategory } : {};
+  const eventVenueType = byVenueType ? { "venues.venueType": byVenueType } : {};
   const eventTypeFilter = byEventType ? { eventType: byEventType } : {};
-  const pageFilter = page ? parseInt(page) : {} ;
-  const limitFilter = limit ? parseInt(limit) : {};
+  const pageFilter = page ? parseInt(page) : 1 ;
+  const limitFilter = limit ? parseInt(limit) : 10;
   
   try {
-    const events = await Event
-        .find({
-          ...startDateFilter,
-          // ...eventCategoryFilter,
-          ...eventTypeFilter,
-        })
-        .limit(limitFilter)
-        .skip(limitFilter * (pageFilter - 1))
-        .populate("venues")
-        .populate("artists");
+    // const events = await Event
+    //     .find({
+    //       ...startDateFilter,
+    //       ...eventVenueType,
+    //       ...eventTypeFilter,
+    //     })
+    //     .limit(limitFilter)
+    //     .skip(limitFilter * (pageFilter - 1))
+    //     .populate("venues")
+    //     .populate("artists")
 
-      res.status(200).send( events );
+    const events = await Event.aggregate([
+      {
+        $lookup: {
+          from: "venues",
+          localField: "venues",
+          foreignField: "_id",
+          as: "venues",
+        },
+      },
+      {
+        $lookup: {
+          from: "artists",
+          localField: "artists",
+          foreignField: "_id",
+          as: "artists",
+        },
+      }, 
+      {
+        $match: {
+          ...startDateFilter,
+          ...eventVenueType,
+          ...eventTypeFilter,
+        },
+      }, 
+      {
+        $facet: {
+          events: [
+            { $skip: limitFilter * (pageFilter - 1) },
+            { $limit: limitFilter },
+          ],
+          totalCount: [
+            {
+              $count: "count",
+            },
+          ],
+        },
+      },
+    ]);
+    
+    res.status(200).send(events[0]);
+
   } catch (error) {
     console.log(error);
     res.status(500).send({
