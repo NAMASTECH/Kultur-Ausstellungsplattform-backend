@@ -39,8 +39,8 @@ export async function getAllEvents(req, res) {
     byDateEnd ? new Date(byDateEnd) : null
   );
 
-  const eventVenueType = byVenueType ? { "venues.venueType": byVenueType } : {};
-  const eventTypeFilter = byEventType ? { eventType: byEventType } : {};
+  const eventVenueType = byVenueType && byVenueType !== "ALL" ? { "venues.venueType": byVenueType } : {};
+  const eventTypeFilter = byEventType && byEventType !== "ALL" ? { eventType: byEventType } : {};
   const pageFilter = page ? parseInt(page) : 1 ;
   const limitFilter = limit ? parseInt(limit) : 10;
   
