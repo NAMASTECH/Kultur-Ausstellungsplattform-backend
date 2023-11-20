@@ -22,7 +22,7 @@ const searchByDate = (byDateStart, byDateEnd) => {
       ],
     };
   } else {
-    return { dateStart: { $gte: new Date(dateNew.toISOString().split("T")[0]) } };
+    return { dateEnd: { $gte: new Date(dateNew.toISOString().split("T")[0]) } };
   }
 };
 
