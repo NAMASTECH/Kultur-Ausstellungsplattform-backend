@@ -22,7 +22,7 @@ const searchByDate = (byDateStart, byDateEnd) => {
       ],
     };
   } else {
-    return {};
+    return { dateStart: { $gte: new Date(dateNew.toISOString().split("T")[0]) } };
   }
 };
 
@@ -33,7 +33,7 @@ export async function getAllEvents(req, res) {
   const byEventType = req.query.eventType;
   const page = req.query.page;
   const limit = req.query.limit;
-  
+
   const startDateFilter = searchByDate(
     byDateStart ? new Date(byDateStart) : null,
     byDateEnd ? new Date(byDateEnd) : null
@@ -43,7 +43,7 @@ export async function getAllEvents(req, res) {
   const eventTypeFilter = byEventType && byEventType !== "All" ? { eventType: byEventType } : {};
   const pageFilter = page ? parseInt(page) : 1 ;
   const limitFilter = limit ? parseInt(limit) : 10;
-  
+  console.log({...startDateFilter})
   try {
     // const events = await Event
     //     .find({
@@ -80,6 +80,12 @@ export async function getAllEvents(req, res) {
           ...eventTypeFilter,
         },
       }, 
+      {
+        $sort: {
+          dateStart: 1,
+          timeStart: 1,
+        },
+      },
       {
         $facet: {
           events: [
