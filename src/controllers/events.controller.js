@@ -79,7 +79,15 @@ export async function getAllEvents(req, res) {
           ...eventVenueType,
           ...eventTypeFilter,
         },
-      }, 
+      },
+      {
+        $lookup: {
+          from: "organizers",
+          localField: "organizerId",
+          foreignField: "_id",
+          as: "organizer",
+        },
+      },
       {
         $sort: {
           dateStart: 1,
