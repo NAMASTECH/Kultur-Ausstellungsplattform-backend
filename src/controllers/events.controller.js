@@ -43,19 +43,8 @@ export async function getAllEvents(req, res) {
   const eventTypeFilter = byEventType && byEventType !== "All" ? { eventType: byEventType } : {};
   const pageFilter = page ? parseInt(page) : 1 ;
   const limitFilter = limit ? parseInt(limit) : 10;
-  console.log({...startDateFilter})
+  
   try {
-    // const events = await Event
-    //     .find({
-    //       ...startDateFilter,
-    //       ...eventVenueType,
-    //       ...eventTypeFilter,
-    //     })
-    //     .limit(limitFilter)
-    //     .skip(limitFilter * (pageFilter - 1))
-    //     .populate("venues")
-    //     .populate("artists")
-
     const events = await Event.aggregate([
       {
         $lookup: {
