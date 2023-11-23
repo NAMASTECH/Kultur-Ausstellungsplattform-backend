@@ -1,6 +1,7 @@
 import { Router } from "express";
 import * as eventController from '../controllers/event.controller.js';
 import { validateOrganizerAndAdmin } from "../middlewares/auth.middleware.js";
+
 const router = Router();
 
 
@@ -12,6 +13,6 @@ router.delete('/event/:id', validateOrganizerAndAdmin, eventController.deleteEve
 // router.get('/event', eventController.getEvents);
 router.get('/event/:id', eventController.getEventById);
 // Abfrage aller Events eines Organizers
-router.get('/events/organizer/:organizerId', getEventsByOrganizerId);
+router.get('/events/organizer/:organizerId',eventController.getEventsByOrganizerId);
 
 export default router;
