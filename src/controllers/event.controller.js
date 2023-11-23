@@ -14,7 +14,7 @@ export const createEvent = async (req, res) => {
   const token = req.cookies.access_token;
   const decoded = jwt.decode(token, process.env.JWT_SECRET);
   const idOrg = decoded.id;
-  const organizerData = await organizer.findOne({ userId: idOrg });
+  const organizerData = await Organizer.findOne({ userId: idOrg });
 
   try {
     // Dublettenprüfung bei Venue (unique)
@@ -162,7 +162,9 @@ export const getEvents = async (req, res) => {
 // Abfrage eines einzelnen Events
 export const getEventById = async (req, res) => {
   try {
-    const event = await Event.findById(req.params.id).populate("venues").populate("artists");
+    const event = await Event.findById(req.params.id)
+      .populate("venues")
+      .populate("artists");
     if (!event) {
       return res.status(404).json({ message: "Event nicht gefunden" });
     }
@@ -177,10 +179,17 @@ export const getEventsByOrganizerId = async (req, res) => {
   const organizerId = req.params.organizerId;
 
   try {
-    const events = await Event.find({ organizerId }).populate("venues").populate("artists");
+    const events = await Event.find({ organizerId })
+      .populate("venues")
+      .populate("artists");
 
     res.json(events);
   } catch (error) {
-    res.status(500).json({ message: "Fehler beim Abrufen der Events des Organizers", error });
+    res
+      .status(500)
+      .json({
+        message: "Fehler beim Abrufen der Events des Organizers",
+        error,
+      });
   }
 };
