@@ -171,3 +171,16 @@ export const getEventById = async (req, res) => {
     res.status(500).json({ message: "Fehler beim Abrufen des Events", error });
   }
 };
+
+// Abfrage aller Events eines Organizers
+export const getEventsByOrganizerId = async (req, res) => {
+  const organizerId = req.params.organizerId;
+
+  try {
+    const events = await Event.find({ organizerId }).populate("venues").populate("artists");
+
+    res.json(events);
+  } catch (error) {
+    res.status(500).json({ message: "Fehler beim Abrufen der Events des Organizers", error });
+  }
+};

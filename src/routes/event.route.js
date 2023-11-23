@@ -11,5 +11,7 @@ router.put('/event/:id', validateOrganizerAndAdmin, eventController.updateEvent)
 router.delete('/event/:id', validateOrganizerAndAdmin, eventController.deleteEvent);
 // router.get('/event', eventController.getEvents);
 router.get('/event/:id', eventController.getEventById);
+// Abfrage aller Events eines Organizers
+router.get('/events/organizer/:organizerId', getEventsByOrganizerId);
 
 export default router;
