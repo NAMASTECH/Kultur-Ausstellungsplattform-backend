@@ -79,7 +79,7 @@ function generateData() {
     // info about artist
     artistName: faker.lorem.words(),
     artistType: faker.lorem.words(),
-    artistDescription: faker.lorem.words(),
+    artistDescription: faker.lorem.words(200),
     artistHomepage: faker.internet.url(),
     artistImg: faker.image.urlLoremFlickr({
       keywords: "music",
