@@ -162,9 +162,9 @@ export const getEvents = async (req, res) => {
 // Abfrage eines einzelnen Events
 export const getEventById = async (req, res) => {
   try {
-    const event = await Event.findById(req.params.id);
+    const event = await Event.findById(req.params.id).populate("venues").populate("artists");
     if (!event) {
-      return res.status(404).json({ message: "Event nicht gefunden" }).populate("venues").populate("artists");
+      return res.status(404).json({ message: "Event nicht gefunden" });
     }
     res.json(event);
   } catch (error) {
