@@ -74,14 +74,18 @@ export async function registerNewOrganizer(req, res) {
       lastname,
       organization,
       userId,
-    });// Erstelle neue Organizer-Instanz
+    }); // Erstelle neue Organizer-Instanz
 
     const entry = await newOrganizer.save();
-    res.status(201).send({message: "Organizer created successfully! Please wait for approval"});
+    res
+      .status(201)
+      .send({
+        message: "Organizer created successfully! Please wait for approval",
+      });
   } catch (error) {
     console.error(error);
     res.status(400).send({
-     message: "Something went wrong! Please contact Us."
+      message: "Something went wrong! Please contact Us.",
     });
   }
 }
@@ -94,8 +98,10 @@ export async function loginUser(req, res) {
 
   try {
     // Versuche Usereintrag per Usernamen zu holen
-    const userEntry = username ? await User.findOne({ username: username }) : await User.findOne({ email: email });
-    
+    const userEntry = username
+      ? await User.findOne({ username: username })
+      : await User.findOne({ email: email });
+
     // Prüfe, ob Usereintrag per Usernamen gefunden wurde
     if (!userEntry) {
       // Sende Fehler zurück
@@ -134,7 +140,7 @@ export async function loginUser(req, res) {
     };
 
     const token = jwt.sign(tokenPayload, process.env.JWT_SECRET, {
-      expiresIn: 60 * 10, // 60 sek. * 5 Minuten = 5 Minuten
+      expiresIn: 60 * 5 * 1000, // 60 Sek. * 5 * 1000 Millisekunden = 5 Minuten
     });
 
     // Stelle HttpOnly Cookie für Token aus

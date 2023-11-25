@@ -16,6 +16,8 @@ export const createEvent = async (req, res) => {
   const idOrg = decoded.id;
   const organizerData = await Organizer.findOne({ userId: idOrg });
 
+  console.log(req.body);
+
   try {
     // Dublettenprüfung bei Venue (unique)
     const {
@@ -36,11 +38,11 @@ export const createEvent = async (req, res) => {
       houseNumber,
       zipCode,
       additionalAddressInfo,
-      artistName,
-      artistType,
-      artistDescription,
-      artistHomepage,
-      artistImg,
+      // artistName,
+      // artistType,
+      // artistDescription,
+      // artistHomepage,
+      // artistImg,
     } = req.body;
 
     // Überprüfe, ob ein Venue mit den gleichen Werten bereits existiert
@@ -69,25 +71,58 @@ export const createEvent = async (req, res) => {
       existingVenue = await existingVenue.save();
     }
 
-    let existingArtist = await Artist.findOne({
-      artistName,
-      artistType,
-      artistDescription,
-      artistHomepage,
-      artistImg,
-    });
+    // let existingArtist = await Artist.findOne({
+    //   artistName,
+    //   artistType,
+    //   artistDescription,
+    //   artistHomepage,
+    //   artistImg,
+    // });
 
-    if (!existingArtist) {
-      // Wenn das Venue nicht existiert, erstelle ein neues
-      existingArtist = new Artist({
+    // if (!existingArtist) {
+    //   // Wenn das Venue nicht existiert, erstelle ein neues
+    //   existingArtist = new Artist({
+    //     artistName,
+    //     artistType,
+    //     artistDescription,
+    //     artistHomepage,
+    //     artistImg,
+    //   });
+
+    //   existingArtist = await existingArtist.save();
+    // }
+
+    const artistDetails = req.body.artists;
+    let artistIds = [];
+
+    for (const details of artistDetails) {
+      let {
         artistName,
         artistType,
         artistDescription,
         artistHomepage,
         artistImg,
+      } = details;
+
+      // TODO: Prüfen, ob wirklich anhand aller Felder gesucht werden soll
+      let existingArtist = await Artist.findOne({
+        artistName,
+        artistType,
       });
 
-      existingArtist = await existingArtist.save();
+      if (!existingArtist) {
+        // Wenn Artist nicht existiert, neu erstellen
+        existingArtist = new Artist({
+          artistName,
+          artistType,
+          artistDescription,
+          artistHomepage,
+          artistImg,
+        });
+        existingArtist = await existingArtist.save();
+      }
+
+      artistIds.push(existingArtist._id);
     }
 
     // Event anlegen
@@ -104,7 +139,7 @@ export const createEvent = async (req, res) => {
       timeEnd,
       organizerId: organizerData._id,
       venues: existingVenue._id,
-      artists: existingArtist._id,
+      artists: artistIds,
     });
 
     const savedEvent = await newEvent.save();
@@ -185,11 +220,9 @@ export const getEventsByOrganizerId = async (req, res) => {
 
     res.json(events);
   } catch (error) {
-    res
-      .status(500)
-      .json({
-        message: "Fehler beim Abrufen der Events des Organizers",
-        error,
-      });
+    res.status(500).json({
+      message: "Fehler beim Abrufen der Events des Organizers",
+      error,
+    });
   }
 };
