@@ -220,7 +220,8 @@ export const getEventsByOrganizerId = async (req, res) => {
 
   try {
     const events = await Event.find({ organizerId })
-    .select("_id eventTitle dateStart dateEnd createdAt updatedAt")
+    .populate("venues" , "venueName", )
+    .select("_id eventTitle dateStart dateEnd updatedAt")
     .limit(limitFilter)
     .skip(limitFilter * (pageFilter - 1))
     .sort({ dateStart: 1, timeStart: 1 })
