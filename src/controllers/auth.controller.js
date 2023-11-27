@@ -101,6 +101,7 @@ export async function loginUser(req, res) {
     const userEntry = username
       ? await User.findOne({ username: username })
       : await User.findOne({ email: email });
+      const organizerId = await organizer.findOne({ userId: userEntry._id });
 
     // Prüfe, ob Usereintrag per Usernamen gefunden wurde
     if (!userEntry) {
@@ -140,7 +141,7 @@ export async function loginUser(req, res) {
     };
 
     const token = jwt.sign(tokenPayload, process.env.JWT_SECRET, {
-      expiresIn: 60 * 5 * 1000, // 60 Sek. * 5 * 1000 Millisekunden = 5 Minuten
+      expiresIn: 1000 * 60 * 60, // 60 Sek. * 5 * 1000 Millisekunden = 5 Minuten
     });
 
     // Stelle HttpOnly Cookie für Token aus
@@ -154,6 +155,7 @@ export async function loginUser(req, res) {
       id: userEntry._id,
       username: userEntry.username,
       role: userEntry.role,
+      organizerId: organizerId._id,
     });
   } catch (error) {
     console.error(error);

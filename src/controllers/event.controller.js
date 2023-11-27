@@ -212,13 +212,22 @@ export const getEventById = async (req, res) => {
 // Abfrage aller Events eines Organizers
 export const getEventsByOrganizerId = async (req, res) => {
   const organizerId = req.params.organizerId;
+  const page = req.query.page;
+  const limit = req.query.limit;
+
+  const pageFilter = parseInt(page) || 1;
+  const limitFilter = parseInt(limit) || 10;
 
   try {
     const events = await Event.find({ organizerId })
-      .populate("venues")
-      .populate("artists");
+    .select("_id eventTitle dateStart dateEnd createdAt updatedAt")
+    .limit(limitFilter)
+    .skip(limitFilter * (pageFilter - 1))
+    .sort({ dateStart: 1, timeStart: 1 })
+    ;
 
-    res.json(events);
+    const totalCount = await Event.countDocuments({ organizerId });
+    res.json({events, totalCount});
   } catch (error) {
     res.status(500).json({
       message: "Fehler beim Abrufen der Events des Organizers",
