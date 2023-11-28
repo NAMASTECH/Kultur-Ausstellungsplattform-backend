@@ -221,7 +221,7 @@ export const getEventsByOrganizerId = async (req, res) => {
   try {
     const events = await Event.find({ organizerId })
     .populate("venues" , "venueName", )
-    .select("_id eventTitle dateStart dateEnd updatedAt")
+    .select("_id eventTitle dateStart dateEnd updatedAt isActive")
     .limit(limitFilter)
     .skip(limitFilter * (pageFilter - 1))
     .sort({ dateStart: 1, timeStart: 1 })
@@ -236,3 +236,24 @@ export const getEventsByOrganizerId = async (req, res) => {
     });
   }
 };
+export const deactivateEvent = async (req, res) => {
+  try {
+    const updatedEvent = await Event.findByIdAndUpdate(
+      req.params.id,
+      { isActive: false }, // Setze isActive auf false, um das Event zu deaktivieren
+      { new: true }
+    );
+
+    if (!updatedEvent) {
+      return res.status(404).json({ message: "Event nicht gefunden" });
+    }
+
+    res.json(updatedEvent);
+  } catch (error) {
+    res
+      .status(500)
+      .json({ message: "Fehler beim Deaktivieren des Events", error });
+  }
+};
+
+
