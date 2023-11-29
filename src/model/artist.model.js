@@ -2,7 +2,7 @@ import { Schema, model } from "mongoose";
 
 const artistsSchema = new Schema(
   {
-    artistName: { type: String, required: true, cast: false },
+    artistName: { type: String, cast: false },
     artistType: { type: String, cast: false },
     artistDescription: { type: String, cast: false },
     artistHomepage: { type: String, cast: false },

@@ -154,28 +154,51 @@ export const createEvent = async (req, res) => {
 };
 // Aktualisiere ein vorhandenes Event
 export const updateEvent = async (req, res) => {
-  const [eventTitle, eventCategory, eventType, img, description, homepage, dateStart, dateEnd, timeStart, timeEnd,] = req.body;
-  const [venueName, venueType, city, street, houseNumber, zipCode, additionalAddressInfo,] = req.body;
+  const {
+    eventTitle, eventCategory, eventType, img, description, homepage, dateStart, dateEnd, timeStart, timeEnd,
+    venueName, venueType, city, street, houseNumber, zipCode, additionalAddressInfo,
+    artistName, artistType, artistDescription, artistHomepage, artistImg,
+  } = req.body;
+  const id = req.params.id;
+  const dateStartFormated = dateStart ? new Date(dateStart) : undefined;
+  const dateEndFormated = dateEnd ? new Date(dateEnd) : undefined;
   try {
-    const updatedEvent = await Event.findByIdAndUpdate(
-      req.params.id,
-      { eventTitle, eventCategory, eventType, img, description, homepage, dateStart, dateEnd, timeStart, timeEnd },
-      { new: true }
-    );
-    const updatedVenue = await Venue.findByIdAndUpdate(
-      updateEvent.venues._id,
-      { venueName, venueType, city, street, houseNumber, zipCode, additionalAddressInfo },
-    );
+  const eventUpdate = await Event.findByIdAndUpdate(id);
+  eventUpdate.eventTitle = eventTitle || eventUpdate.eventTitle;
+  eventUpdate.eventCategory = eventCategory || eventUpdate.eventCategory;
+  eventUpdate.eventType = eventType || eventUpdate.eventType;
+  eventUpdate.img = img || eventUpdate.img;
+  eventUpdate.description = description || eventUpdate.description;
+  eventUpdate.homepage = homepage || eventUpdate.homepage;
+  eventUpdate.dateStart = dateStartFormated || eventUpdate.dateStart;
+  eventUpdate.dateEnd = dateEndFormated || eventUpdate.dateEnd;
+  eventUpdate.timeStart = timeStart || eventUpdate.timeStart;
+  eventUpdate.timeEnd = timeEnd || eventUpdate.timeEnd;
+  eventUpdate.save();
 
-    if (!updatedEvent) {
-      return res.status(404).json({ message: "Event nicht gefunden" });
-    }
-    res.json(updatedEvent, updatedVenue);
+  const venueUpdate = await Venue.findByIdAndUpdate(eventUpdate.venues);
+  venueUpdate.venueName = venueName || venueUpdate.venueName;
+  venueUpdate.venueType = venueType || venueUpdate.venueType;
+  venueUpdate.city = city || venueUpdate.city;
+  venueUpdate.street = street || venueUpdate.street;
+  venueUpdate.houseNumber = houseNumber || venueUpdate.houseNumber;
+  venueUpdate.zipCode = zipCode || venueUpdate.zipCode;
+  venueUpdate.additionalAddressInfo = additionalAddressInfo || venueUpdate.additionalAddressInfo;
+  venueUpdate.save();
+
+  const artistUpdate = await Artist.findById(eventUpdate.artists);
+  artistUpdate.artistName = artistName;
+  artistUpdate.artistType = artistType;
+  artistUpdate.artistDescription = artistDescription;
+  artistUpdate.artistHomepage = artistHomepage;
+  artistUpdate.artistImg = artistImg;
+  artistUpdate.save();
+  res.status(200).json({ message: "Event aktualisiert" });
   } catch (error) {
-    res
-      .status(500)
-      .json({ message: "Fehler beim Aktualisieren des Events", error });
+    res.status(500).json({ message: "Fehler beim Aktualisieren des Events", error });
   }
+   
+
 };
 
 // Lösche ein Event

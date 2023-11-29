@@ -15,6 +15,7 @@ const eventSchema = new Schema(
     dateEnd: { type: Date, required: true, cast: false, },
     timeStart: { type: String, required: true, cast: false, },
     timeEnd: { type: String, required: true, cast: false, },
+    isActive: { type: Boolean, required: true, default: true, cast: false, },
     organizerId: { type: Schema.Types.ObjectId, ref: "organizer" },
     venues: [{type: Schema.Types.ObjectId, ref: "venue" }],
     artists: [{type: Schema.Types.ObjectId, ref: "artist" }],
