@@ -250,15 +250,13 @@ export const getEventsByOrganizerId = async (req, res) => {
 
   try {
     const events = await Event.find({ organizerId })
-    .populate("venues" , "venueName", )
-    .select("_id eventTitle dateStart dateEnd updatedAt isActive")
-    .limit(limitFilter)
-    .skip(limitFilter * (pageFilter - 1))
-    .sort({ dateStart: 1, timeStart: 1 })
-    ;
-
+      .populate("venues", "venueName")
+      .select("_id eventTitle dateStart dateEnd updatedAt isActive")
+      .limit(limitFilter)
+      .skip(limitFilter * (pageFilter - 1))
+      .sort({ dateStart: 1, timeStart: 1 });
     const totalCount = await Event.countDocuments({ organizerId });
-    res.json({events, totalCount});
+    res.json({ events, totalCount });
   } catch (error) {
     res.status(500).json({
       message: "Fehler beim Abrufen der Events des Organizers",
@@ -285,5 +283,3 @@ export const deactivateEvent = async (req, res) => {
       .json({ message: "Fehler beim Deaktivieren des Events", error });
   }
 };
-
-
