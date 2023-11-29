@@ -154,16 +154,23 @@ export const createEvent = async (req, res) => {
 };
 // Aktualisiere ein vorhandenes Event
 export const updateEvent = async (req, res) => {
+  const [eventTitle, eventCategory, eventType, img, description, homepage, dateStart, dateEnd, timeStart, timeEnd,] = req.body;
+  const [venueName, venueType, city, street, houseNumber, zipCode, additionalAddressInfo,] = req.body;
   try {
     const updatedEvent = await Event.findByIdAndUpdate(
       req.params.id,
-      req.body,
+      { eventTitle, eventCategory, eventType, img, description, homepage, dateStart, dateEnd, timeStart, timeEnd },
       { new: true }
     );
+    const updatedVenue = await Venue.findByIdAndUpdate(
+      updateEvent.venues._id,
+      { venueName, venueType, city, street, houseNumber, zipCode, additionalAddressInfo },
+    );
+
     if (!updatedEvent) {
       return res.status(404).json({ message: "Event nicht gefunden" });
     }
-    res.json(updatedEvent);
+    res.json(updatedEvent, updatedVenue);
   } catch (error) {
     res
       .status(500)
