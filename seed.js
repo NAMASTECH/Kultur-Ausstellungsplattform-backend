@@ -1,13 +1,13 @@
 import dotenv from "dotenv";
-import { connectToDb } from "../src/service/db.js";
+import { connectToDb } from "./src/service/db.js";
 import { faker } from "@faker-js/faker";
-
-import Venue from "../src/model/venue.model.js";
-import Artist from "../src/model/artist.model.js";
-import Event from "../src/model/event.model.js";
-import Organizer from "../src/model/organizer.model.js";
-import User from "../src/model/user.model.js";
-import { USER_ROLES } from "../src/model/user.model.js";
+import bcrypt from "bcrypt";
+import Venue from "./src/model/venue.model.js";
+import Artist from "./src/model/artist.model.js";
+import Event from "./src/model/event.model.js";
+import Organizer from "./src/model/organizer.model.js";
+import User from "./src/model/user.model.js";
+import { USER_ROLES } from "./src/model/user.model.js";
 
 dotenv.config();
 
@@ -26,11 +26,11 @@ function generateData() {
     eventTitle: faker.lorem.words(),
     eventCategory: faker.helpers.arrayElement([
       "Kunst",
-      // "Musik",
-      // "Clubs",
-      // "Sport",
-      // "Bildung",
-      // "Politik"
+      "Musik",
+      "Clubs",
+      "Sport",
+      "Bildung",
+      "Politik"
     ]),
     eventType: faker.helpers.arrayElement([
       "Ausstellung",
@@ -39,12 +39,8 @@ function generateData() {
       "Vortrag",
       "Festival",
     ]),
-    img: faker.image.urlLoremFlickr({
-      keywords: "music",
-      height: 480,
-      width: 640,
-    }),
-    description: faker.lorem.words(),
+    img: faker.image.urlLoremFlickr({ category: 'abstract', height: 480, width: 640 }) ,
+    description: faker.lorem.words(500),
     homepage: faker.internet.url(),
     dateStart: usedStart,
     dateEnd: End,
@@ -170,6 +166,7 @@ async function createEvent(userid) {
     dateEnd: data.dateEnd,
     timeStart: data.timeStart,
     timeEnd: data.timeEnd,
+    isActive: true,
     venues: venue._id,
     artists: artist._id,
     organizerId: userid,
@@ -194,7 +191,7 @@ try {
     // change the number of users here
     const userid = await createData();
     console.log(`User ${i} created ` + userid);
-    for (let i = 0; i < 100; i++) {
+    for (let i = 0; i < 10; i++) {
       // change the number of events here
       const event = await createEvent(userid);
       console.log(`Event ${i} created  ` + event + " " + userid);

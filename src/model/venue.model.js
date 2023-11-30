@@ -1,5 +1,4 @@
 import { Schema, model } from "mongoose";
-// Define DB Schema for Event
 
 const venueSchema = new Schema(
 	{
@@ -14,10 +13,6 @@ const venueSchema = new Schema(
 	{ timestamps: false, versionKey: false }
 );
 
-  
-console.log("Hallo from Venue Model")
-
-// Erstelle Model-Instanz für Venue-Collection
 const Venue = model("venue", venueSchema);
 
 export default Venue;

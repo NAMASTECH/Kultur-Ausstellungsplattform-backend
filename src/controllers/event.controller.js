@@ -266,17 +266,24 @@ export const getEventsByOrganizerId = async (req, res) => {
 };
 export const deactivateEvent = async (req, res) => {
   try {
-    const updatedEvent = await Event.findByIdAndUpdate(
+    let message
+    const updatedEvent = await Event.findById(
       req.params.id,
-      { isActive: false }, // Setze isActive auf false, um das Event zu deaktivieren
-      { new: true }
     );
+    if (updatedEvent.isActive === false) {
+      updatedEvent.isActive = true;
+      message = "Event aktiviert"
+    }else{
+      updatedEvent.isActive = false;
+      message = "Event deaktiviert"
+    }
+    updatedEvent.save();
 
     if (!updatedEvent) {
       return res.status(404).json({ message: "Event nicht gefunden" });
     }
 
-    res.json(updatedEvent);
+    res.json({ message: message });
   } catch (error) {
     res
       .status(500)
