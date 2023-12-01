@@ -1,75 +1,77 @@
-import ajv from "ajv";
+import Ajv from "ajv";
 
-const eventSchema = new ajv.Schema({
+const ajv = new Ajv();
+
+const eventSchema = {
   type: "object",
   properties: {
-    eventTitle: { type: "string", minLength: 3, maxLength: 30 },
-    eventCategory: { type: "string", minLength: 3, maxLength: 30 },
-    eventType: { type: "string", minLength: 3, maxLength: 30 },
-    homepage: { type: "string", minLength: 3, maxLength: 3000 },
-    dateStart: { type: "string", minLength: 3, maxLength: 30 },
-    dateEnd: { type: "string", minLength: 3, maxLength: 30 },
-    timeStart: { type: "string", minLength: 3, maxLength: 30 },
-    timeEnd: { type: "string", minLength: 3, maxLength: 30 },
-    img: { type: "string", minLength: 3, maxLength: 3000 },
-    description: { type: "string", minLength: 3, maxLength: 3000 },
-
-    // artist: { type: "string", minLength: 3, maxLength: 30 },
+    eventTitle: { type: "string", minLength: 3, maxLength: 100 },
+    eventType: { type: "string", minLength: 3, maxLength: 100 },
+    // img: { type: "string", format: "uri" },
+    // eventCategory: { type: "string", minLength: 3, maxLength: 100 },
+    description: { type: "string", minLength: 3 },
+    // homepage: { type: "string", format: "uri" },
+    dateStart: { type: "string" /* format: "date" */ },
+    dateEnd: { type: "string" /* format: "date" */ },
+    timeStart: { type: "string", pattern: "^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$" },
+    timeEnd: { type: "string", pattern: "^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$" },
+    venueName: { type: "string", minLength: 3, maxLength: 100 },
+    venueType: { type: "string", minLength: 3, maxLength: 100 },
+    city: { type: "string", minLength: 3, maxLength: 100 },
+    street: { type: "string", minLength: 3, maxLength: 100 },
+    houseNumber: { type: "string", minLength: 1, maxLength: 10 },
+    additionalAddressInfo: { type: "string" }, // Empty string allowed
+    zipCode: { type: "string", minLength: 3, maxLength: 10 },
     artists: {
       type: "array",
       items: {
         type: "object",
         properties: {
+          _id: { type: "string" },
           artistName: { type: "string", minLength: 1 },
           artistType: { type: "string" }, // minLength not needed if it can be empty
           artistDescription: { type: "string" },
-          artistHomepage: { type: "string" },
-          artistImg: { type: "string" },
+          // artistHomepage: { type: "string", format: "uri" },
+          // artistImg: { type: "string", format: "uri" },
         },
-        required: ["artistName"], // Sicherstellen, dass artistName angegeben ist
-        additionalProperties: false,
+        required: ["artistName"],
+        additionalProperties: true,
       },
-      minItems: 1, // Sicherstellen, dass mindestens 1 artist angegeben wurde
+      minItems: 1,
     },
-
-    venueName: { type: "string", minLength: 3, maxLength: 30 },
-    venueType: { type: "string", minLength: 3, maxLength: 30 },
-    city: { type: "string", minLength: 3, maxLength: 30 },
-    street: { type: "string", minLength: 3, maxLength: 30 },
-    houseNumber: { type: "string", minLength: 3, maxLength: 30 },
-    additionalAddressInfo: { type: "string", minLength: 3, maxLength: 30 },
-    zipCode: { type: "string", minLength: 3, maxLength: 30 },
   },
   required: [
     "eventTitle",
-    "eventCategory",
     "eventType",
-    "homepage",
+    // "img",
+    "description",
+    // "homepage",
     "dateStart",
     "dateEnd",
     "timeStart",
     "timeEnd",
-    "img",
-    "description",
-    "artists",
     "venueName",
     "venueType",
     "city",
     "street",
     "houseNumber",
-    "additionalAddressInfo",
     "zipCode",
+    "artists",
   ],
-  additionalProperties: false,
-});
+  additionalProperties: true,
+};
 
-export const validateEvent = (req, res, next) => {
-  const valid = eventSchema.validate(req.body);
+const validateEvent = (req, res, next) => {
+  console.log(req.body);
+  const validate = ajv.compile(eventSchema);
+  const valid = validate(req.body);
   if (!valid) {
     return res.status(400).json({
       message: "Bad request",
-      errors: eventSchema.errors,
+      errors: validate.errors,
     });
   }
   next();
 };
+
+export default validateEvent;

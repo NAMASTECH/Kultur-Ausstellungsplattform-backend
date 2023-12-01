@@ -38,11 +38,6 @@ export const createEvent = async (req, res) => {
       houseNumber,
       zipCode,
       additionalAddressInfo,
-      // artistName,
-      // artistType,
-      // artistDescription,
-      // artistHomepage,
-      // artistImg,
     } = req.body;
 
     // Überprüfe, ob ein Venue mit den gleichen Werten bereits existiert
@@ -70,27 +65,6 @@ export const createEvent = async (req, res) => {
 
       existingVenue = await existingVenue.save();
     }
-
-    // let existingArtist = await Artist.findOne({
-    //   artistName,
-    //   artistType,
-    //   artistDescription,
-    //   artistHomepage,
-    //   artistImg,
-    // });
-
-    // if (!existingArtist) {
-    //   // Wenn das Venue nicht existiert, erstelle ein neues
-    //   existingArtist = new Artist({
-    //     artistName,
-    //     artistType,
-    //     artistDescription,
-    //     artistHomepage,
-    //     artistImg,
-    //   });
-
-    //   existingArtist = await existingArtist.save();
-    // }
 
     const artistDetails = req.body.artists;
     let artistIds = [];
@@ -155,6 +129,8 @@ export const createEvent = async (req, res) => {
 };
 // Aktualisiere ein vorhandenes Event
 export const updateEvent = async (req, res) => {
+  console.log(req.body);
+
   const {
     eventTitle,
     eventCategory,
@@ -166,6 +142,7 @@ export const updateEvent = async (req, res) => {
     dateEnd,
     timeStart,
     timeEnd,
+    // venues,
     venueName,
     venueType,
     city,
@@ -173,28 +150,51 @@ export const updateEvent = async (req, res) => {
     houseNumber,
     zipCode,
     additionalAddressInfo,
-    artistName,
-    artistType,
-    artistDescription,
-    artistHomepage,
-    artistImg,
+    artists,
+    // artistName,
+    // artistType,
+    // artistDescription,
+    // artistHomepage,
+    // artistImg,
   } = req.body;
-  const id = req.params.id;
+  const eventId = req.params.id;
+
   const dateStartFormated = dateStart ? new Date(dateStart) : undefined;
   const dateEndFormated = dateEnd ? new Date(dateEnd) : undefined;
   try {
-    const eventUpdate = await Event.findByIdAndUpdate(id);
-    eventUpdate.eventTitle = eventTitle || eventUpdate.eventTitle;
-    eventUpdate.eventCategory = eventCategory || eventUpdate.eventCategory;
-    eventUpdate.eventType = eventType || eventUpdate.eventType;
-    eventUpdate.img = img || eventUpdate.img;
-    eventUpdate.description = description || eventUpdate.description;
-    eventUpdate.homepage = homepage || eventUpdate.homepage;
-    eventUpdate.dateStart = dateStartFormated || eventUpdate.dateStart;
-    eventUpdate.dateEnd = dateEndFormated || eventUpdate.dateEnd;
-    eventUpdate.timeStart = timeStart || eventUpdate.timeStart;
-    eventUpdate.timeEnd = timeEnd || eventUpdate.timeEnd;
-    eventUpdate.save();
+    // update Event
+
+    // const eventUpdate = await Event.findByIdAndUpdate(eventId);
+    // eventUpdate.eventTitle = eventTitle || eventUpdate.eventTitle;
+    // eventUpdate.eventCategory = eventCategory || eventUpdate.eventCategory;
+    // eventUpdate.eventType = eventType || eventUpdate.eventType;
+    // eventUpdate.img = img || eventUpdate.img;
+    // eventUpdate.description = description || eventUpdate.description;
+    // eventUpdate.homepage = homepage || eventUpdate.homepage;
+    // eventUpdate.dateStart = dateStartFormated || eventUpdate.dateStart;
+    // eventUpdate.dateEnd = dateEndFormated || eventUpdate.dateEnd;
+    // eventUpdate.timeStart = timeStart || eventUpdate.timeStart;
+    // eventUpdate.timeEnd = timeEnd || eventUpdate.timeEnd;
+    // eventUpdate.save();
+
+    const eventUpdate = await Event.findByIdAndUpdate(
+      eventId,
+      {
+        eventTitle,
+        eventCategory,
+        eventType,
+        img,
+        description,
+        homepage,
+        dateStart: new Date(dateStart),
+        dateEnd: new Date(dateEnd),
+        timeStart,
+        timeEnd,
+      },
+      { new: true }
+    );
+
+    // Update Venues
 
     const venueUpdate = await Venue.findByIdAndUpdate(eventUpdate.venues);
     venueUpdate.venueName = venueName || venueUpdate.venueName;
@@ -207,14 +207,58 @@ export const updateEvent = async (req, res) => {
       additionalAddressInfo || venueUpdate.additionalAddressInfo;
     venueUpdate.save();
 
-    const artistUpdate = await Artist.findById(eventUpdate.artists);
-    artistUpdate.artistName = artistName;
-    artistUpdate.artistType = artistType;
-    artistUpdate.artistDescription = artistDescription;
-    artistUpdate.artistHomepage = artistHomepage;
-    artistUpdate.artistImg = artistImg;
-    artistUpdate.save();
-    res.status(200).json({ message: "Event aktualisiert" });
+    // if (venues && Array.isArray(venues)) {
+    //   // Assuming each venue in the array has an id
+    //   venues.forEach(async (venue) => {
+    //     await Venue.findByIdAndUpdate(venue._id, venue);
+    //   });
+    // }
+
+    // Update Artists
+
+    // const artistUpdate = await Artist.findById(eventUpdate.artists);
+    // artistUpdate.artistName = artistName;
+    // artistUpdate.artistType = artistType;
+    // artistUpdate.artistDescription = artistDescription;
+    // artistUpdate.artistHomepage = artistHomepage;
+    // artistUpdate.artistImg = artistImg;
+    // artistUpdate.save();
+
+    // if (artists && Array.isArray(artists)) {
+    //   // Assuming each artist in the array has an id
+    //   artists.forEach(async (artist) => {
+    //     await Artist.findByIdAndUpdate(artist._id, artist);
+    //   });
+    // }
+
+    // Process artists
+    const artistIds = await Promise.all(
+      artists.map(async (artist) => {
+        if (artist._id) {
+          // Update existing artist
+          const updatedArtist = await Artist.findByIdAndUpdate(
+            artist._id,
+            artist,
+            { new: true }
+          );
+          return updatedArtist._id;
+        } else {
+          // Create new artist
+          const newArtist = new Artist(artist);
+          const savedArtist = await newArtist.save();
+          return savedArtist._id;
+        }
+      })
+    );
+
+    // Update event with new artistIds
+    const updatedEvent = await Event.findByIdAndUpdate(
+      eventId,
+      { $set: { artists: artistIds } },
+      { new: true }
+    );
+
+    res.status(200).json({ message: "Event aktualisiert", updatedEvent });
   } catch (error) {
     res
       .status(500)
