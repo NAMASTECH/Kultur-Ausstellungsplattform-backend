@@ -95,13 +95,13 @@ export async function loginUser(req, res) {
   const { password } = req.body;
   const { username } = req.body;
   const { email } = req.body;
+  let organizerId = null;
 
   try {
     // Versuche Usereintrag per Usernamen zu holen
     const userEntry = username
       ? await User.findOne({ username: username })
       : await User.findOne({ email: email });
-      const organizerId = await organizer.findOne({ userId: userEntry._id });
 
     // Prüfe, ob Usereintrag per Usernamen gefunden wurde
     if (!userEntry) {
@@ -110,10 +110,13 @@ export async function loginUser(req, res) {
         message: "Incorrect username or password",
       });
 
-      // Brich vorzeitig ab
       return;
     }
 
+    if (userEntry.role === USER_ROLES.organizer) {
+       organizerId = await organizer.findOne({ userId: userEntry._id });
+    }
+    
     // Vergleiche gespeicherten Hash mit dem übergebenen Passwort
     if (!(await bcrypt.compare(password, userEntry.password))) {
       // Sende Fehler zurück
@@ -121,19 +124,9 @@ export async function loginUser(req, res) {
         message: "Incorrect username or password",
       });
 
-      // Brich vorzeitig ab
       return;
     }
 
-    /* 
-            Erstelle neuen Zugangstoken für eingeloggten User.
-            IM DETAIL: Signiere mittels JsonWebToken eine freigewählte Payload.
-            Die dabei entstehende Signatur beruht auf einem gut gesicherten Passwort/Secret.
-            Es entsteht eine lange Zeichenkette (Hash), die bei Veränderungen keine Gültigkeit mehr aufweist.
-            Es besteht auch die Möglichkeit eine Gültigkeitsdauer
-            für diesen Token zu bestimmen. Nach Ablauf dieser Dauer
-            gilt der Token zwar noch als korrekt, aber nicht mehr gültig.
-        */
     const tokenPayload = {
       id: userEntry._id,
       username: userEntry.username,
@@ -141,7 +134,7 @@ export async function loginUser(req, res) {
     };
 
     const token = jwt.sign(tokenPayload, process.env.JWT_SECRET, {
-      expiresIn: 1000 * 60 * 60, // 60 Sek. * 5 * 1000 Millisekunden = 5 Minuten
+      expiresIn: 1000 * 60 * 60, // 1000 ms * 60 sek. * 60 min = Eine Stunde
     });
 
     // Stelle HttpOnly Cookie für Token aus
@@ -155,8 +148,9 @@ export async function loginUser(req, res) {
       id: userEntry._id,
       username: userEntry.username,
       role: userEntry.role,
-      organizerId: organizerId._id,
+      organizerId: organizerId._id ? organizerId._id : null,
     });
+
   } catch (error) {
     console.error(error);
 
