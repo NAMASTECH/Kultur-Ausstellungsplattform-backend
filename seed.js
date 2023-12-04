@@ -21,6 +21,30 @@ function generateData() {
   const refStart = new Date(Start);
   const numberRandom = faker.number.int({ min: 0, max: 7 });
   const End = new Date(refStart.setDate(refStart.getDate() + numberRandom));
+
+  function generateImageData() {
+    // Define a set of acceptable aspect ratios
+    const aspectRatios = [
+      { width: 4, height: 3 },
+      { width: 16, height: 9 },
+      // { width: 1, height: 1 },
+      // ... you can add more ratios here
+    ];
+
+    // Randomly select an aspect ratio
+    const selectedRatio = faker.helpers.arrayElement(aspectRatios);
+
+    // Generate one dimension (e.g., width) and calculate the other (e.g., height)
+    const randomWidth = faker.datatype.number({ min: 800, max: 1400 }); // Random width between 100 and 1000
+    const randomHeight = Math.round(
+      randomWidth * (selectedRatio.height / selectedRatio.width)
+    );
+
+    const imageUrl = `https://picsum.photos/${randomWidth}/${randomHeight}`;
+
+    return imageUrl;
+  }
+
   const data = {
     // info about event
     eventTitle: faker.lorem.words(),
@@ -30,7 +54,7 @@ function generateData() {
       "Clubs",
       "Sport",
       "Bildung",
-      "Politik"
+      "Politik",
     ]),
     eventType: faker.helpers.arrayElement([
       "Ausstellung",
@@ -39,8 +63,13 @@ function generateData() {
       "Vortrag",
       "Festival",
     ]),
-    img: faker.image.urlLoremFlickr({ category: 'abstract', height: 480, width: 640 }) ,
-    description: faker.lorem.words(500),
+    // img: faker.image.urlLoremFlickr({
+    //   category: "abstract",
+    //   height: randomHeight,
+    //   width: randomWidth,
+    // }),
+    img: generateImageData(),
+    description: faker.lorem.words(300),
     homepage: faker.internet.url(),
     dateStart: usedStart,
     dateEnd: End,
@@ -96,11 +125,12 @@ function generateData() {
     artistType: faker.lorem.words(),
     artistDescription: faker.lorem.words(200),
     artistHomepage: faker.internet.url(),
-    artistImg: faker.image.urlLoremFlickr({
-      keywords: "music",
-      height: 480,
-      width: 640,
-    }),
+    // artistImg: faker.image.urlLoremFlickr({
+    //   keywords: "music",
+    //   height: randomHeight,
+    //   width: randomWidth,
+    // }),
+    artistImg: generateImageData(),
   };
   return data;
 }
