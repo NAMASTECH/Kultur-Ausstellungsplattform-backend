@@ -11,9 +11,9 @@ POST('/api/auth/register/organizer', ...)
 {
 	"firstname": "",
 	"lastname": "",
-  "organization": "",
+    "organization": "",
 	"email": "" ,
-  "password":  ""
+    "password":  ""
 }
 ```
 
@@ -24,9 +24,9 @@ Wenn ein Organizer angelegt wird, wird zunächst ein Eintrag in User angelegt un
 ```jsx
 POST('/api/auth/register/user', ...)
 {
-  "username": "",
-	"email": "",
-  "password": ""
+    "username": "",
+    "email": "",
+    "password": ""
 }
 ```
 
@@ -42,16 +42,16 @@ Die Anmeldung soll ENTWEDER über username ODER über email möglich sein
 }
 ```
 
-**\*\*\*\***\*\***\*\*\*\***Anmeldung (Login) Organization**\*\*\*\***\*\***\*\*\*\***
+**Anmeldung (Login) Organization**
 
 ```jsx
 POST('/api/auth/login',... )
 {
- "firstname": "",
- "lastname": "",
- "organization": "",
- "email": "",
- "password": "",
+    "firstname": "",
+    "lastname": "",
+    "organization": "",
+    "email": "",
+    "password": "",
 }
 ```
 
@@ -91,13 +91,13 @@ POST('/api/event', ...)
  "eventType": "",
  "eventCategory": "",
  "img": "", // for futur type arry
- “description“: "",
+ "description": "",
  "homepage": "",
 // Wann?
- “dateStart“: "",
- “dateEnd“: "",
- “timeStart“: "",
- “timeEnd“: "",
+ "dateStart": "",
+ "dateEnd": "",
+ "timeStart": "",
+ "timeEnd": "",
 // Wo?
  "venueName": "",                       // Name vom Veranstaltungsort
  "venueType": "",
@@ -106,7 +106,7 @@ POST('/api/event', ...)
  "houseNumber": "",
  "additionalAddressInfo": "",          // Zusatzinfos
  "zipCode": "",                         // Postleitzahl
-}, {timestamps: true, versionKey: false}
+}
 ```
 
 ## **Veranstaltungsanzeige und -suche**
@@ -114,7 +114,7 @@ POST('/api/event', ...)
 **Master-Ansicht (Alle Kunstveranstaltungen)**
 
 ```jsx
-GET('/api/events', ...)
+    get('/api/events', ...)
 ```
 
 Response Body
@@ -191,5 +191,5 @@ Response Body
 - über Query Parameter
 
 ```js
-get('/api/events/:eventId', ...)
+    get('/api/events/:eventId', ...)
 ```
