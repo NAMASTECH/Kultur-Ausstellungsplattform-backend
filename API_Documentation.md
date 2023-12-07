@@ -24,9 +24,9 @@ Wenn ein Organizer angelegt wird, wird zunächst ein Eintrag in User angelegt un
 ```jsx
 POST('/api/auth/register/user', ...)
 {
-  "username":
-	"email":
-  "password":
+  "username": "",
+	"email": "",
+  "password": ""
 }
 ```
 
@@ -42,7 +42,7 @@ Die Anmeldung soll ENTWEDER über username ODER über email möglich sein
 }
 ```
 
-********\*\*********Anmeldung (Login) Organization********\*\*********
+**\*\*\*\***\*\***\*\*\*\***Anmeldung (Login) Organization**\*\*\*\***\*\***\*\*\*\***
 
 ```jsx
 POST('/api/auth/login',... )
@@ -50,8 +50,8 @@ POST('/api/auth/login',... )
  "firstname": "",
  "lastname": "",
  "organization": "",
- “email“: ““,
- “password“: ““,
+ "email": "",
+ "password": "",
 }
 ```
 
@@ -122,25 +122,25 @@ Response Body
 ```jsx
 {
     "_id": "655385b829ea2d760abf6a4a",
-    "eventTitle": "60 Years Tour",
-    "artists": ["Rolling Stones", "Artist2", "Artist3" ]
-		// ODER
+    "eventTitle": "10 Years Tour",
 		"artists": [
 			{
-        artistName: ""
-        artistType: ""
-        artistDescription: ""
-        artistHomepage: ""
-        artistImg: "",
+        "artistName": "Max Mustermann"
+        "artistType": ""
+        "artistDescription": ""
+        "artistHomepage": ""
+        "artistImg": "",
     },
 		{
-        artistName: "",
-        artistType: "",
-        artistDescription: "",
-        artistHomepage: "",
-        artistImg: "",
+        "artistName": "Otto Müller",
+        "artistType": "",
+        "artistDescription": "",
+        "artistHomepage": "",
+        "artistImg": "",
     },
 		]
+    // ODER (wie vorher)
+    // "artists": ["Rolling Stones", "Artist2", "Artist3" ]
     "eventCategory": "Music",
     "eventType": "Concert",
     "img": "https://picsum.photos/200/301",
@@ -165,16 +165,16 @@ Response Body
             "updatedAt": "2023-11-14T14:35:36.708Z"
         },
         {
-            _id: "6553875e29ea2d760abf6a5e",
-            venueName: "Tempodrom",
-            venueType: "Konzerthalle",
-            city: "Berlin",
-            street: "Möckernstrasse",
-            houseNumber: "10",
-            zipCode: "10963",
-            additionalAddressInfo: "",
-            createdAt: "2023-11-14T14:42:38.257Z",
-            updatedAt: "2023-11-14T14:42:38.257Z",
+            "_id": "6553875e29ea2d760abf6a5e",
+            "venueName": "Tempodrom",
+            "venueType": "Konzerthalle",
+            "city": "Berlin",
+            "street": "Möckernstrasse",
+            "houseNumber": "10",
+            "zipCode": "10963",
+            "additionalAddressInfo": "",
+            "createdAt": "2023-11-14T14:42:38.257Z",
+            "updatedAt": "2023-11-14T14:42:38.257Z",
         },
     ],
     "createdAt": "2023-11-14T14:35:36.818Z",
