@@ -95,7 +95,10 @@ Hinweis:
 router.post("/event", validateOrganizerAndAdmin, eventController.createEvent);
 ```
 
-**Request Body**
+<details>
+<summary>
+<h3 style="display: inline;">Request Body</h3>
+</summary>
 
 ```jsx
 {
@@ -140,6 +143,10 @@ router.post("/event", validateOrganizerAndAdmin, eventController.createEvent);
 }
 ```
 
+</details>
+
+<br>
+
 ## **Eventsübersicht (EventOverview.jsx)**
 
 - wird als **Startseite** angezeigt
@@ -155,7 +162,14 @@ router.post("/event", validateOrganizerAndAdmin, eventController.createEvent);
 router.get("/events", eventsController.getAllEvents);
 ```
 
-**Response Body** - Ein Array von `events`-Objekten
+<br>
+
+<details>
+<summary style="font-size: 1.0rem; ">
+<h3 style="display: inline;">
+Response Body - Ein Array von `events`-Objekten
+</h3>
+</summary>
 
 ```json
 {
@@ -294,6 +308,10 @@ router.get("/events", eventsController.getAllEvents);
 }
 ```
 
+</details>
+
+<br>
+
 ## **Suchfunktion** für die EventOverview
 
 - über optionale Query Parameter
@@ -353,7 +371,14 @@ router.get("/event/:id", eventController.getEventById);
 http://127.0.0.1:5173/api/event/656a70cb98f49c9630c6fb37
 ```
 
-**Response body** - 1 `event` Objekt
+<br>
+
+<details>
+<summary style="font-size: 1.0rem; ">
+<h3 style="display: inline;">
+Response body - 1 <code>event</code> Objekt
+</h3>
+</summary>
 
 ```jsx
 {
@@ -404,6 +429,10 @@ http://127.0.0.1:5173/api/event/656a70cb98f49c9630c6fb37
     "updatedAt": "2023-12-02T00:39:17.657Z"
 }
 ```
+
+</details>
+
+<br>
 
 ## Navigation zur EditEvent.jsx Ansicht von der UsersTable.jsx aus
 
@@ -599,6 +628,10 @@ router.patch(
 );
 ```
 
+**Response Body**
+
+- Wenn ein Event aktualisiert wurde, kommt dann folgendes zurück:
+
 ```json
 {
   "message": "Event aktualisiert",
@@ -627,3 +660,13 @@ router.patch(
   }
 }
 ```
+
+<br>
+
+Und der User wird weitergeleitet nach `/myData`, also die `UsersTable.jsx`
+
+TO DO:
+
+- `/myData` umbenennen auf `myEvents`
+- `UsersTable.jsx` umbenennen auf `MyEvents.jsx`
+- Dokumentation aller weiteren Endpoints, die ab jetzt dazu kommen.
