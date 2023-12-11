@@ -16,7 +16,7 @@ export const createEvent = async (req, res) => {
   const idOrg = decoded.id;
   const organizerData = await Organizer.findOne({ userId: idOrg });
 
-  console.log(req.body);
+  // console.log(req.body);
 
   try {
     // Dublettenprüfung bei Venue (unique)
@@ -129,7 +129,7 @@ export const createEvent = async (req, res) => {
 };
 // Aktualisiere ein vorhandenes Event
 export const updateEvent = async (req, res) => {
-  console.log(req.body);
+  // console.log(req.body);
 
   const {
     eventTitle,
