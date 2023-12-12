@@ -7,24 +7,58 @@ const searchByDate = (byDateStart, byDateEnd) => {
 
   if (byDateStart && byDateEnd) {
     return {
-      $and: [
-        { dateStart: { $gte: byDateStart } },
-        { dateStart: { $lte: byDateEnd } },
-      ],
+      // entweder
+      $or: [
+        {
+          // wenn Event im angegebenen Zeitraum startet 
+          $and: [
+            { dateStart: { $gte: byDateStart } },
+            { dateStart: { $lte: byDateEnd } }
+          ]
+        },
+        {
+          // Wenn Event im angegebenen Zeitraum endet
+          $and: [
+            { dateEnd: { $gte: byDateStart } },
+            { dateEnd: { $lte: byDateEnd } }
+          ]
+        },
+        {
+          // oder, Events die vor dem angegebenen Datum begonnen haben 
+          // und später enden, als das vom User angegebenen endDate
+          $and: [
+            { dateStart: { $lte: byDateStart } },
+            { dateEnd: { $gte: byDateEnd } }
+          ]
+        }
+      ]
     };
   } else if (byDateStart) {
     const today = new Date(byDateStart.toISOString());
     const nextDay = new Date(today.setDate(today.getDate() + 1));
     return {
-      $and: [
-        { dateStart: { $gte: byDateStart } },
-        { dateStart: { $lte: nextDay } },
-      ],
+      $or: [
+        {
+          $and: [
+            { dateStart: { $gte: byDateStart } },
+            { dateStart: { $lte: nextDay } }
+          ]
+        },
+        {
+          $and: [
+            { dateEnd: { $gte: byDateStart } },
+            { dateEnd: { $lte: nextDay } }
+          ]
+        }
+      ]
     };
   } else {
     return { dateEnd: { $gte: new Date(dateNew.toISOString().split("T")[0]) } };
   }
 };
+// 2023-05-11 - 2024-02-28
+
+
 
 export async function getAllEvents(req, res) {
   const byDateStart = req.query.dateStart;
@@ -39,11 +73,11 @@ export async function getAllEvents(req, res) {
     byDateEnd ? new Date(byDateEnd) : null
   );
 
-  const eventVenueType = byVenueType && byVenueType !== "All" ? { "venues.venueType": byVenueType } : {};
-  const eventTypeFilter = byEventType && byEventType !== "All" ? { eventType: byEventType } : {};
-  const pageFilter = page ? parseInt(page) : 1 ;
+  const eventVenueType = byVenueType !== "All" ? { "venues.venueType": byVenueType } : {};
+  const eventTypeFilter = byEventType !== "All" ? { eventType: byEventType } : {};
+  const pageFilter = page ? parseInt(page) : 1;
   const limitFilter = limit ? parseInt(limit) : 10;
-  
+
   try {
     const events = await Event.aggregate([
       {
@@ -61,7 +95,7 @@ export async function getAllEvents(req, res) {
           foreignField: "_id",
           as: "artists",
         },
-      }, 
+      },
       {
         $match: {
           ...startDateFilter,
@@ -97,7 +131,7 @@ export async function getAllEvents(req, res) {
         },
       },
     ]);
-    
+
     res.status(200).send(events[0]);
 
   } catch (error) {
