@@ -134,13 +134,13 @@ export async function loginUser(req, res) {
     };
 
     const token = jwt.sign(tokenPayload, process.env.JWT_SECRET, {
-      expiresIn: 1000 * 60 * 60, // 1000 ms * 60 sek. * 60 min = Eine Stunde
+      expiresIn: 1000 * 60 * 60 * 48, // 1000 ms * 60 sek. * 60 min  = Eine Stunde
     });
 
     // Stelle HttpOnly Cookie für Token aus
     res.cookie("access_token", token, {
       httpOnly: true, // als HTTP-Only Cookie setzen (nicht per JS erreichbar im Browser)
-      maxAge: 1000 * 60 * 60, // 1000 ms * 60 sek. * 60 min = Eine Stunde
+      maxAge: 1000 * 60 * 60 * 48, // 1000 ms * 60 sek. * 60 min = Eine Stunde
     });
 
     // Sende partiellen Usereintrag als Bestätigung zurück
